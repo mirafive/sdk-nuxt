@@ -48,7 +48,7 @@ export default defineNuxtConfig({
 ```sh
 # .env
 NUXT_PUBLIC_MIRAFIVE_KEY=mf_…      # the website key (public)
-MIRAFIVE_SECRET_KEY=sk_…           # server only: server events and the flag bootstrap
+MIRAFIVE_SECRET_KEY=mf_…           # server only: server events and the flag bootstrap
 ```
 
 ```vue
