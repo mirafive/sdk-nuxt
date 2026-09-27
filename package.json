@@ -19,7 +19,10 @@
   },
   "license": "MIT",
   "author": "MIRA FIVE <support@mirafive.io>",
-  "repository": "github:mirafive/sdk-nuxt",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mirafive/sdk-nuxt.git"
+  },
   "files": [
     "dist"
   ],
@@ -41,8 +44,7 @@
     "./package.json": "./package.json"
   },
   "publishConfig": {
-    "access": "public",
-    "provenance": true
+    "access": "public"
   },
   "scripts": {
     "build": "nuxt-module-build build",
