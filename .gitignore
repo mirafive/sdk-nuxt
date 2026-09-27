@@ -1,0 +1,10 @@
+node_modules/
+dist/
+coverage/
+*.tgz
+.DS_Store
+.nuxt/
+.output/
+playground/.nuxt/
+playground/.output/
+playground/node_modules/
