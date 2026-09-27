@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.0 — unreleased
+## 1.0.0 — 2026-09-27
 
 First release on the v1 protocol, rebuilt from scratch as a thin module over
 `@mirafive/sdk-browser`, `@mirafive/sdk-vue` and `@mirafive/sdk-server`.
