@@ -25,9 +25,9 @@
         "vue": "^3.5.43",
       },
       "peerDependencies": {
-        "@mirafive/sdk-browser": "^0.5.0",
-        "@mirafive/sdk-server": "^0.5.0",
-        "@mirafive/sdk-vue": "^0.5.0",
+        "@mirafive/sdk-browser": "^1.0.0",
+        "@mirafive/sdk-server": "^1.0.0",
+        "@mirafive/sdk-vue": "^1.0.0",
         "nuxt": "^4.0.0",
       },
     },
@@ -264,7 +264,7 @@
 
     "@mirafive/sdk-server": ["@mirafive/sdk-server@file:../sdk-server", { "devDependencies": { "@arethetypeswrong/cli": "^0.18.5", "@size-limit/preset-small-lib": "^14.0.1", "@types/node": "^26.6.3", "ajv": "^8.20.0", "miniflare": "^4.20260730.0", "oxfmt": "^0.70.0", "oxlint": "^1.85.0", "oxlint-tsgolint": "^7.0.2003", "publint": "^0.3.24", "size-limit": "^14.0.1", "tsdown": "^0.23.0", "typescript": "^7.0.2", "vitest": "^5.0.2" } }],
 
-    "@mirafive/sdk-vue": ["@mirafive/sdk-vue@file:../sdk-vue", { "devDependencies": { "@arethetypeswrong/cli": "^0.18.5", "@mirafive/sdk-browser": "file:../sdk-browser", "@size-limit/preset-small-lib": "^14.0.1", "@types/node": "^26.6.3", "@vue/server-renderer": "^3.5.43", "@vue/test-utils": "^2.5.1", "happy-dom": "^20.14.5", "oxfmt": "^0.70.0", "oxlint": "^1.85.0", "oxlint-tsgolint": "^7.0.2003", "publint": "^0.3.24", "size-limit": "^14.0.1", "tsdown": "^0.23.0", "typescript": "^7.0.2", "vitest": "^5.0.2", "vue": "^3.5.43" }, "peerDependencies": { "@mirafive/sdk-browser": "^0.5.0", "vue": "^3.4.0" } }],
+    "@mirafive/sdk-vue": ["@mirafive/sdk-vue@file:../sdk-vue", { "devDependencies": { "@arethetypeswrong/cli": "^0.18.5", "@mirafive/sdk-browser": "file:../sdk-browser", "@size-limit/preset-small-lib": "^14.0.1", "@types/node": "^26.6.3", "@vue/server-renderer": "^3.5.43", "@vue/test-utils": "^2.5.1", "happy-dom": "^20.14.5", "oxfmt": "^0.70.0", "oxlint": "^1.85.0", "oxlint-tsgolint": "^7.0.2003", "publint": "^0.3.24", "size-limit": "^14.0.1", "tsdown": "^0.23.0", "typescript": "^7.0.2", "vitest": "^5.0.2", "vue": "^3.5.43" }, "peerDependencies": { "@mirafive/sdk-browser": "^1.0.0", "vue": "^3.5.0" } }],
 
     "@napi-rs/lzma-linux-x64-gnu": ["@napi-rs/lzma-linux-x64-gnu@1.5.1", "", { "os": "linux", "cpu": "x64" }, "sha512-oTXEIha4SsuXdTA4Iyskj0kpdx2yVXdhd75c2v3xGrHFfVMsbhTPZU/nMPL4sWKo4pBHm3aucLaqGlF696dTyQ=="],
 
@@ -1704,7 +1704,7 @@
 
     "@mirafive/sdk-server/typescript": ["typescript@7.0.2", "", { "optionalDependencies": { "@typescript/typescript-aix-ppc64": "7.0.2", "@typescript/typescript-darwin-arm64": "7.0.2", "@typescript/typescript-darwin-x64": "7.0.2", "@typescript/typescript-freebsd-arm64": "7.0.2", "@typescript/typescript-freebsd-x64": "7.0.2", "@typescript/typescript-linux-arm": "7.0.2", "@typescript/typescript-linux-arm64": "7.0.2", "@typescript/typescript-linux-loong64": "7.0.2", "@typescript/typescript-linux-mips64el": "7.0.2", "@typescript/typescript-linux-ppc64": "7.0.2", "@typescript/typescript-linux-riscv64": "7.0.2", "@typescript/typescript-linux-s390x": "7.0.2", "@typescript/typescript-linux-x64": "7.0.2", "@typescript/typescript-netbsd-arm64": "7.0.2", "@typescript/typescript-netbsd-x64": "7.0.2", "@typescript/typescript-openbsd-arm64": "7.0.2", "@typescript/typescript-openbsd-x64": "7.0.2", "@typescript/typescript-sunos-x64": "7.0.2", "@typescript/typescript-win32-arm64": "7.0.2", "@typescript/typescript-win32-x64": "7.0.2" }, "bin": { "tsc": "bin/tsc" } }, "sha512-8FYau96o3NKOhbjKi/qNvG/W5jhzxkbdm5sj9AbZ/5T5sWqn3hJgLfGx27sRKZWTvyzCP8dLRBTf5tBTSRVUNA=="],
 
-    "@mirafive/sdk-vue/@mirafive/sdk-browser": ["@mirafive/sdk-browser@file:../sdk-browser", { "devDependencies": { "@arethetypeswrong/cli": "^0.18.5", "@size-limit/preset-small-lib": "^14.0.1", "@types/node": "^26.6.3", "ajv": "^8.20.0", "happy-dom": "^20.0.0", "oxfmt": "^0.70.0", "oxlint": "^1.85.0", "oxlint-tsgolint": "^7.0.2003", "publint": "^0.3.24", "size-limit": "^14.0.1", "tsdown": "^0.23.0", "typescript": "^7.0.2", "vitest": "^5.0.2" } }],
+    "@mirafive/sdk-vue/@mirafive/sdk-browser": ["@mirafive/sdk-browser@file:../sdk-browser", {}],
 
     "@mirafive/sdk-vue/typescript": ["typescript@7.0.2", "", { "optionalDependencies": { "@typescript/typescript-aix-ppc64": "7.0.2", "@typescript/typescript-darwin-arm64": "7.0.2", "@typescript/typescript-darwin-x64": "7.0.2", "@typescript/typescript-freebsd-arm64": "7.0.2", "@typescript/typescript-freebsd-x64": "7.0.2", "@typescript/typescript-linux-arm": "7.0.2", "@typescript/typescript-linux-arm64": "7.0.2", "@typescript/typescript-linux-loong64": "7.0.2", "@typescript/typescript-linux-mips64el": "7.0.2", "@typescript/typescript-linux-ppc64": "7.0.2", "@typescript/typescript-linux-riscv64": "7.0.2", "@typescript/typescript-linux-s390x": "7.0.2", "@typescript/typescript-linux-x64": "7.0.2", "@typescript/typescript-netbsd-arm64": "7.0.2", "@typescript/typescript-netbsd-x64": "7.0.2", "@typescript/typescript-openbsd-arm64": "7.0.2", "@typescript/typescript-openbsd-x64": "7.0.2", "@typescript/typescript-sunos-x64": "7.0.2", "@typescript/typescript-win32-arm64": "7.0.2", "@typescript/typescript-win32-x64": "7.0.2" }, "bin": { "tsc": "bin/tsc" } }, "sha512-8FYau96o3NKOhbjKi/qNvG/W5jhzxkbdm5sj9AbZ/5T5sWqn3hJgLfGx27sRKZWTvyzCP8dLRBTf5tBTSRVUNA=="],
 

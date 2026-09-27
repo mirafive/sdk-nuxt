@@ -1,6 +1,6 @@
 {
   "name": "@mirafive/sdk-nuxt",
-  "version": "0.5.0",
+  "version": "1.0.0",
   "description": "MIRA FIVE for Nuxt: one module for privacy-first analytics, feature flags with a server bootstrap, and server events.",
   "keywords": [
     "ab-testing",
@@ -79,9 +79,9 @@
     "vue": "^3.5.43"
   },
   "peerDependencies": {
-    "@mirafive/sdk-browser": "^0.5.0",
-    "@mirafive/sdk-server": "^0.5.0",
-    "@mirafive/sdk-vue": "^0.5.0",
+    "@mirafive/sdk-browser": "^1.0.0",
+    "@mirafive/sdk-server": "^1.0.0",
+    "@mirafive/sdk-vue": "^1.0.0",
     "nuxt": "^4.0.0"
   },
   "overrides": {

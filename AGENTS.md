@@ -57,5 +57,5 @@ change to `src/`.
 
 `@mirafive/sdk-browser`, `@mirafive/sdk-vue` and `@mirafive/sdk-server` are unpublished:
 `devDependencies` and `overrides` point at `file:../sdk-browser`, `file:../sdk-vue` and
-`file:../sdk-server` (build their `dist` first). Once 0.5.0 is on npm, switch them to
-`^0.5.0` and drop `overrides`; CI cannot install until then.
+`file:../sdk-server` (build their `dist` first). Once 1.0.0 is on npm, switch them to
+`^1.0.0` and drop `overrides`; CI cannot install until then.
