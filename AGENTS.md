@@ -53,9 +53,8 @@ change to `src/`.
 - Comments only for a non-obvious constraint, one or two lines.
 - Do not run git write commands unless asked; the maintainer commits.
 
-## Local development
+## Dependencies
 
-`@mirafive/sdk-browser`, `@mirafive/sdk-vue` and `@mirafive/sdk-server` are unpublished:
-`devDependencies` and `overrides` point at `file:../sdk-browser`, `file:../sdk-vue` and
-`file:../sdk-server` (build their `dist` first). Once 1.0.0 is on npm, switch them to
-`^1.0.0` and drop `overrides`; CI cannot install until then.
+`@mirafive/sdk-browser`, `@mirafive/sdk-vue` and `@mirafive/sdk-server` are ordinary
+`^1.0.0` dependencies from npm. To try an unreleased sibling change, build it and `bun link`
+it; never commit a `file:` path or `overrides`.
