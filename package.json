@@ -1,7 +1,7 @@
 {
   "name": "@mirafive/sdk-nuxt",
   "version": "1.0.0",
-  "description": "MIRA FIVE for Nuxt: one module for privacy-first analytics, feature flags with a server bootstrap, and server events.",
+  "description": "MIRA FIVE SDK for Nuxt",
   "keywords": [
     "ab-testing",
     "analytics",
