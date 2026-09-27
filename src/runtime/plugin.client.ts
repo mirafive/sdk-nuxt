@@ -17,6 +17,11 @@ export default defineNuxtPlugin({
       console.error(error)
     }
 
+    if (!key) {
+      // oxlint-disable-next-line no-console -- a client plugin has no other channel
+      console.warn("[mirafive] no website key: set NUXT_PUBLIC_MIRAFIVE_KEY; nothing is sent")
+    }
+
     nuxtApp.vueApp.use(createMiraPlugin(client))
   }
 })

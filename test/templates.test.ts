@@ -1,12 +1,13 @@
 import { describe, expect, it } from "vitest"
 
+import { servedFromCache } from "../src/runtime/cache.ts"
 import { clientTemplate, type Feature, resolveFeatures, serverTemplate } from "../src/templates.ts"
 
 const client = (features: Feature[], full = false, hash = false): string =>
   clientTemplate({
     full,
     hash,
-    features: resolveFeatures(features, full).features,
+    features: resolveFeatures({ mode: full ? "full" : "consentless", features }),
     resolve: (id) => `/abs/${id}`
   })
 
@@ -51,20 +52,33 @@ describe("the client template", () => {
   })
 })
 
-describe("features", () => {
-  it("drops search and experiments without full mode", () => {
-    const { features, dropped } = resolveFeatures(["search", "experiments", "autocapture"], false)
-
-    expect([...features]).toEqual(["autocapture"])
-    expect(dropped).toEqual(["search", "experiments"])
+describe("options", () => {
+  it("refuses an unknown mode or feature, a host without a scheme, and full-only features", () => {
+    expect(() => resolveFeatures({ mode: "Full" })).toThrow(/unknown mode "Full"/)
+    expect(() => resolveFeatures({ features: ["flag"] })).toThrow(/unknown feature "flag"/)
+    expect(() => resolveFeatures({ host: "events.example.eu" })).toThrow(/host needs a scheme/)
+    expect(() => resolveFeatures({ features: ["search"] })).toThrow(/"search" needs mode "full"/)
+    expect(() => resolveFeatures({ features: ["experiments"] })).toThrow(/"experiments" needs mode "full"/)
   })
 
-  it("turns the server bootstrap on with flags", () => {
-    expect(serverTemplate(resolveFeatures(["experiments"], true).features)).toBe(
-      "export const flags = true\n"
-    )
-    expect(serverTemplate(resolveFeatures(["autocapture"], true).features)).toBe(
+  it("brings flags with experiments and turns the server bootstrap on", () => {
+    const features = resolveFeatures({ mode: "full", features: ["experiments"] })
+
+    expect([...features]).toEqual(["experiments", "flags"])
+    expect(serverTemplate(features)).toBe("export const flags = true\n")
+    expect(serverTemplate(resolveFeatures({ features: ["autocapture"] }))).toBe(
       "export const flags = false\n"
     )
+  })
+})
+
+describe("shared caches", () => {
+  it("treats swr, isr, cache and prerender rules and Nitro's cached handlers as shared", () => {
+    for (const rule of ["swr", "isr", "cache", "prerender"]) {
+      expect(servedFromCache({}, { [rule]: rule === "cache" ? { maxAge: 60 } : 60 })).toBe(true)
+    }
+
+    expect(servedFromCache({ cache: { options: {} } }, {})).toBe(true)
+    expect(servedFromCache({}, { cache: false, swr: false, headers: {} })).toBe(false)
   })
 })

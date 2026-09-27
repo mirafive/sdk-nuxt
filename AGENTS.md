@@ -19,16 +19,18 @@ bun run playground:verify   # nuxt build playground, then checks the client bund
 `playground:verify` asserts that the client bundle holds exactly the configured browser
 plugins and no server SDK, that the server render writes the `#mirafive-flags` block with
 `Cache-Control: private, no-store`, and that `useServerMira()` events are flushed after
-the response. Run it after any change to `src/`.
+the response, while a `swr` route gets no bootstrap and a server warning. Run it after any
+change to `src/`.
 
 ## Layout
 
 - `src/module.ts`: options, runtime config, templates, plugins, auto-imports.
 - `src/templates.ts`: the generated `#build/mirafive/client.mjs` (the only file that
   imports sdk-browser, one import per listed feature) and `#build/mirafive/server.mjs`.
-- `src/runtime/`: client and server Nuxt plugins, composables re-export, and
-  `server/mira.ts` (shared by the app renderer and Nitro through `globalThis`, because the
-  two are bundled separately).
+- `src/runtime/`: client and server Nuxt plugins, composables re-export, `cache.ts`
+  (which routes a shared cache stores), `server/mira.ts` (shared by the app renderer and
+  Nitro through `globalThis`, because the two are bundled separately) and
+  `server/nitro.ts` (marks cached routes on `request`, flushes on `afterResponse`).
 - `types/nuxt.d.ts`: type-checking shims for `#app`, `#imports` and `#build/…`; never shipped.
 - `playground/`: a Nuxt app using the module from `src/`; not in the npm package.
 
@@ -42,7 +44,10 @@ the response. Run it after any change to `src/`.
   generated template. `playground:verify` guards this.
 - The secret key goes to private runtime config only; the module test asserts it is in no
   template and not in `runtimeConfig.public`.
-- A runtime plugin never throws into the app; configuration errors are logged.
+- A runtime plugin never throws into the app; configuration errors are logged. Invalid
+  module options throw at build time.
+- Never write the per-visitor bootstrap into a response a shared cache stores (Nitro
+  `swr`/`isr`/`cache`/`prerender`, `event.context.cache`): those caches ignore `no-store`.
 - `context.sdk` stays what the underlying SDK reports.
 - TypeScript is 6.x here, not 7: `@nuxt/module-builder` needs the TypeScript JS API.
 - Comments only for a non-obvious constraint, one or two lines.

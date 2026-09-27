@@ -23,6 +23,12 @@ const template = async (nuxt: Nuxt, filename: string): Promise<string> => {
 }
 
 describe("module setup", () => {
+  it("fails the build on an invalid mode or feature", async () => {
+    await expect(load({ key: "mf_test", features: ["search"] })).rejects.toThrow(/"search" needs mode "full"/)
+    // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- a mistyped config from JavaScript
+    await expect(load({ key: "mf_test", mode: "Full" as "full" })).rejects.toThrow(/unknown mode/)
+  })
+
   it("keeps the secret key in private runtime config and out of every template", async () => {
     const nuxt = await load({ key: "mf_test", secretKey: secret, mode: "full", features: ["flags"] })
 
@@ -49,7 +55,7 @@ describe("module setup", () => {
     await nuxt.close()
   })
 
-  it("registers the plugins, auto-imports, server utils and the flush plugin", async () => {
+  it("registers the plugins, auto-imports, server utils and the Nitro plugin", async () => {
     const nuxt = await load({ key: "mf_test" })
     const imports: { name: string }[] = []
     const nitro = { imports: { imports: [] as { name: string }[] }, virtual: {} }
@@ -74,7 +80,7 @@ describe("module setup", () => {
       expect.arrayContaining(["useServerMira", "miraFlagsFor"])
     )
     expect((nuxt.options as { nitro?: { plugins?: string[] } }).nitro?.plugins).toEqual(
-      expect.arrayContaining([expect.stringMatching(/runtime\/server\/flush$/)])
+      expect.arrayContaining([expect.stringMatching(/runtime\/server\/nitro$/)])
     )
 
     await nuxt.close()

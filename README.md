@@ -108,7 +108,9 @@ carries `Cache-Control: private, no-store`.
   nothing in the browser. On the server, `miraFlagsFor()` reads `Sec-GPC: 1` and `DNT: 1`
   from the request and passes `optedOut`: no ids, no segment lookup, no exposure.
 - The flag bootstrap is per visitor, so pages carrying it are sent with
-  `Cache-Control: private, no-store`, and prerendered pages never carry one.
+  `Cache-Control: private, no-store`. Pages stored in a shared cache (route rules `swr`,
+  `isr`, `cache`, `prerender`, or any Nitro cached handler) never carry one, because such
+  caches ignore `no-store`; see *Cached routes* below.
 - The secret key lives in the private runtime config only; it is never written to the
   public config, the generated client code or the page.
 
@@ -119,9 +121,14 @@ carries `Cache-Control: private, no-store`.
 | Option | Default | Runtime env | |
 |---|---|---|---|
 | `key` | `""` | `NUXT_PUBLIC_MIRAFIVE_KEY` | the source's public website key |
-| `host` | `MIRAFIVE_HOST` at build, else `https://events.mirafive.io` | `NUXT_PUBLIC_MIRAFIVE_HOST` | |
+| `host` | `https://events.mirafive.io` | `NUXT_PUBLIC_MIRAFIVE_HOST` (browser and server); `MIRAFIVE_HOST` (read at build for the browser, at runtime by the server utils) | needs a scheme |
 | `mode` | `"consentless"` | build time only | `"full"` adds `identity()` |
-| `features` | `[]` | build time only | any of `"autocapture"`, `"search"`, `"flags"`, `"experiments"`; `search` and `experiments` need `"full"` and are left out (with a build warning) without it; `experiments` brings `flags` |
+| `features` | `[]` | build time only | any of `"autocapture"`, `"search"`, `"flags"`, `"experiments"`; `search` and `experiments` need `"full"`; `experiments` brings `flags` |
+
+The build fails with a `TypeError` for an unknown `mode` or feature, a `host` without a
+scheme, or `search`/`experiments` without `mode: "full"`. A missing website key (neither
+`key` nor `NUXT_PUBLIC_MIRAFIVE_KEY` at build) is a build warning, and the browser logs
+`[mirafive] no website key` once per page while it is still empty at runtime.
 | `secretKey` | `""` | `MIRAFIVE_SECRET_KEY` or `NUXT_MIRAFIVE_SECRET_KEY` | server only; prefer the env var over a literal |
 
 ### Auto-imports (app)
@@ -129,7 +136,7 @@ carries `Cache-Control: private, no-store`.
 | | |
 |---|---|
 | `useMira<Events>(): Mira<Events>` | the sdk-browser client; on the server a stand-in that does nothing |
-| `useFlag(key, fallback: boolean \| string): Readonly<Ref<…>>` | a flag as a ref; answers the bootstrap during SSR and hydration, then follows flag loads |
+| `useFlag(key, fallback: boolean \| string): Readonly<Ref<string \| boolean>>` | exactly what `mira.flag(key, fallback)` answers (`true`/`false` for on/off flags, the variant otherwise) as a ref; the bootstrap during SSR and hydration, then follows flag loads |
 | `useFlagConfig<T>(key, fallback: T): Readonly<Ref<T>>` | the variant's remote-config value as a ref |
 
 ### Server utils (auto-imported in `server/`)
@@ -157,30 +164,45 @@ export default defineEventHandler(async (event) => {
 })
 ```
 
+### Cached routes
+
+Nitro's `swr`/`isr`/`cache` route rules (and CDN ISR on Vercel or Netlify) store one
+rendered page and serve it to every visitor; they ignore `Cache-Control: private, no-store`.
+On such routes, and on prerendered pages, the module writes no bootstrap, renders `useFlag`
+with its fallback, and warns once per server process
+(`[mirafive] no flag bootstrap on cached route …`). The browser then loads the flags
+itself and the refs update after hydration. Keep pages that must render a flag's value on
+the server off shared caches.
+
 ## Framework / runtime notes
 
 - **Serverless and edge.** One client pair per process or isolate; per-request work goes
   to `event.waitUntil` (Nitro provides it on every preset). The first flag read of a cold
   instance waits up to 1.5 s for the flag document; later reads are synchronous.
 - **Hash routing** (`router.options.hashMode`) switches `pageviews({ hash: true })` on.
-- **Prerendering / `nuxi generate`.** No bootstrap is written into prerendered pages;
-  the browser fetches its flags instead.
+- **Prerendering / `nuxi generate`, `swr`, `isr`, `cache`.** No bootstrap on these pages
+  (see *Cached routes*); the browser fetches its flags instead.
+- **`MIRAFIVE_HOST`.** For the browser it is baked in at build time (the client never sees
+  server env); set `NUXT_PUBLIC_MIRAFIVE_HOST` to change it per deployment. The server
+  utils also read `MIRAFIVE_HOST` at runtime when the public host is empty.
 - **Development.** `localhost` sends nothing (sdk-browser's local-host guard); a
   `[mirafive] local host` warning in the console confirms the client is running.
 - **CSP.** `connect-src https://events.mirafive.io` (or your `host`). The bootstrap block
   is `type="application/json"` and is not executed.
-- Without a website key the client stays off and the composables answer fallbacks; a
-  configuration error in the browser is logged, never thrown into your app.
+- Without a website key the client stays off (logged once in the browser) and the
+  composables answer fallbacks; a configuration error in the browser is logged, never
+  thrown into your app.
 
 ## Troubleshooting
 
 | Symptom | Cause and fix |
 |---|---|
-| Nothing arrives | Local hosts send nothing; check Do Not Track / GPC; in `mode: "full"` a `consent(…)` call must have run; check `NUXT_PUBLIC_MIRAFIVE_KEY` and `host`. |
+| Nothing arrives | Local hosts send nothing; check Do Not Track / GPC; in `mode: "full"` a `consent(…)` call must have run; check `NUXT_PUBLIC_MIRAFIVE_KEY` (the browser logs `no website key`) and `host`. |
+| Build fails with `[@mirafive/sdk-nuxt] …` | An unknown `mode` or feature, a `host` without a scheme, or `search`/`experiments` without `mode: "full"`. |
 | `403 secret_key_in_path` / `website_key_as_bearer` | The key kinds are swapped: `key` is the website key (`mf_…`), `secretKey` the server's. |
 | `403 origin_not_allowed` | Add the site's origin to the source's allowed origins in MIRA FIVE. |
 | A flag always returns its fallback | Not in this source's flags, `"flags"` missing from `features`, no secret key (no bootstrap; the browser still loads flags after hydration), a `u: p` flag without `event.context.mirafive.userId`, or the fallback has the other kind (boolean vs string). |
-| No `#mirafive-flags` block in the head | `"flags"` is not in `features`, no secret key at runtime, or the page is prerendered. |
+| No `#mirafive-flags` block in the head | `"flags"` is not in `features`, no secret key at runtime, or the route is prerendered or cached (`swr`, `isr`, `cache`); the server logs which. |
 | Server events missing | `MIRAFIVE_SECRET_KEY` is not set at runtime; transport errors are logged with a `[mirafive]` prefix. |
 
 ## For AI agents
@@ -219,15 +241,17 @@ Facts for agents:
   `miraFlagsFor(event, unit)` (Nitro `server/`). No manual imports needed; outside Nuxt
   they come from `@mirafive/sdk-vue` and `@mirafive/sdk-server`.
 - Env vars: `NUXT_PUBLIC_MIRAFIVE_KEY` (website key, public), `NUXT_PUBLIC_MIRAFIVE_HOST`
-  (optional), `MIRAFIVE_SECRET_KEY` or `NUXT_MIRAFIVE_SECRET_KEY` (server only).
+  (optional, runtime), `MIRAFIVE_HOST` (optional; build time for the browser, runtime for
+  the server), `MIRAFIVE_SECRET_KEY` or `NUXT_MIRAFIVE_SECRET_KEY` (server only).
 - The secret key is only ever read from private runtime config or the server's
   environment; never put it under `runtimeConfig.public`, in `app.config`, or in client code.
 - Consentless (default) needs no banner and stores nothing. `mode: "full"` bundles
   `identity()` and sends nothing until `consent(…)`; put it behind the site's CMP.
-- `search` and `experiments` work only with `mode: "full"`; the module drops them
-  otherwise and says so at build time.
+- `search` and `experiments` work only with `mode: "full"`; the build fails otherwise, as
+  it does for an unknown mode or feature.
 - The flag bootstrap needs `"flags"` and a secret key; it sets
-  `Cache-Control: private, no-store` on the page. Name a signed-in user with
+  `Cache-Control: private, no-store` on the page and is skipped (with a server warning) on
+  `swr`/`isr`/`cache`/`prerender` routes, where `useFlag` renders its fallback on the server. Name a signed-in user with
   `event.context.mirafive = { userId }` in a server middleware.
 - Nothing throws for transport reasons: the browser SDK warns once on local hosts, the
   server SDK logs `[mirafive] …` warnings.

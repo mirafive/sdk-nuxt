@@ -8,21 +8,45 @@ export interface ClientTemplateOptions {
   readonly resolve: (id: string) => string
 }
 
-/** Search and experiments need mode "full" and are dropped without it; experiments bring flags. */
-export const resolveFeatures = (
-  listed: readonly Feature[],
-  full: boolean
-): { features: Set<Feature>; dropped: Feature[] } => {
-  const features = new Set(listed)
-  const dropped = full
-    ? []
-    : (["search", "experiments"] as const).filter((feature) => features.delete(feature))
+const known: readonly Feature[] = ["autocapture", "search", "flags", "experiments"]
+
+const fail = (message: string): never => {
+  throw new TypeError(`[@mirafive/sdk-nuxt] ${message}`)
+}
+
+/** Checks the options at build time; `experiments` brings `flags`. */
+export const resolveFeatures = (options: {
+  mode?: unknown
+  features?: readonly unknown[] | undefined
+  host?: unknown
+}): Set<Feature> => {
+  const { mode = "consentless", host } = options
+  const features = new Set<Feature>()
+
+  if (mode !== "consentless" && mode !== "full") {
+    fail(`unknown mode "${String(mode)}"`)
+  }
+
+  if (host !== undefined && (typeof host !== "string" || !/^https?:\/\/./.test(host))) {
+    fail("host needs a scheme")
+  }
+
+  for (const feature of options.features ?? []) {
+    const found =
+      known.find((candidate) => candidate === feature) ?? fail(`unknown feature "${String(feature)}"`)
+
+    if (mode !== "full" && (found === "search" || found === "experiments")) {
+      fail(`"${found}" needs mode "full"`)
+    }
+
+    features.add(found)
+  }
 
   if (features.has("experiments")) {
     features.add("flags")
   }
 
-  return { features, dropped }
+  return features
 }
 
 /** The browser plugins in `createMira` order, as `[subpath, export, options]`. Only these are imported. */

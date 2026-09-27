@@ -32,7 +32,7 @@
   },
   "overrides": [
     {
-      "files": ["*.config.ts", "src/module.ts", "src/runtime/plugin.*.ts", "src/runtime/server/flush.ts"],
+      "files": ["*.config.ts", "src/module.ts", "src/runtime/plugin.*.ts", "src/runtime/server/nitro.ts"],
       "rules": {
         "import/no-default-export": "off"
       }

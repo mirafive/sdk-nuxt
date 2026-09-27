@@ -5,6 +5,7 @@ declare module "#app" {
 
 declare module "#imports" {
   export { useRuntimeConfig } from "nuxt/app"
+  export const getRouteRules: (event: import("h3").H3Event) => Record<string, unknown>
 }
 
 declare module "#build/mirafive/client.mjs" {

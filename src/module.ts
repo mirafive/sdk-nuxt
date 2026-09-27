@@ -45,16 +45,12 @@ export default defineNuxtModule<ModuleOptions>({
     const logger = useLogger("mirafive")
     const resolver = createResolver(import.meta.url)
     const require = createRequire(import.meta.url)
+    const features = resolveFeatures(options)
     const full = options.mode === "full"
-    const { features, dropped } = resolveFeatures(options.features ?? [], full)
     const config = nuxt.options.runtimeConfig
     const key = options.key ?? ""
 
-    for (const feature of dropped) {
-      logger.warn(`"${feature}" needs mode: "full"; it is left out of the bundle.`)
-    }
-
-    if (key === "") {
+    if (key === "" && !process.env["NUXT_PUBLIC_MIRAFIVE_KEY"]) {
       logger.warn(
         "No website key: set mirafive.key or NUXT_PUBLIC_MIRAFIVE_KEY. Nothing is sent without one."
       )
@@ -94,6 +90,6 @@ export default defineNuxtModule<ModuleOptions>({
         from: resolver.resolve("./runtime/server/mira")
       }))
     )
-    addServerPlugin(resolver.resolve("./runtime/server/flush"))
+    addServerPlugin(resolver.resolve("./runtime/server/nitro"))
   }
 })

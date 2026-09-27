@@ -7,6 +7,7 @@ import { useRuntimeConfig } from "#imports"
 interface Clients {
   mira?: Mira
   flags?: MiraFlags
+  warned?: boolean
 }
 
 // The app renderer and Nitro bundle this file separately; both share one client pair.
@@ -27,7 +28,9 @@ export const secretKey = (event: H3Event): string | undefined =>
 
 const options = (event: H3Event) => ({
   key: secretKey(event),
-  host: setting(useRuntimeConfig(event).public["mirafive"], "host")
+  host:
+    setting(useRuntimeConfig(event).public["mirafive"], "host") ??
+    (globalThis.process?.env["MIRAFIVE_HOST"] || undefined)
 })
 
 const server = (event: H3Event): Mira => (clients.mira ??= new Mira(options(event)))
@@ -52,5 +55,14 @@ export const miraFlagsFor = (event: H3Event, unit: FlagUnit = {}): Promise<UserF
 export const flush = (event: H3Event): void => {
   if (event.context["mirafiveFlush"] && clients.mira) {
     event.waitUntil(clients.mira.flush())
+  }
+}
+
+/** Warns once per process; a server has no other channel. */
+export const warnOnce = (message: string): void => {
+  if (!clients.warned) {
+    clients.warned = true
+    // oxlint-disable-next-line no-console -- see above
+    console.warn(`[mirafive] ${message}`)
   }
 }

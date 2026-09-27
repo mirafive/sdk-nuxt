@@ -44,6 +44,7 @@ for (const plugin of ["search", "experiments"]) {
 
 check(!client.includes("mirafive-server"), "client bundle has no @mirafive/sdk-server")
 
+let log = ""
 const server = spawn("node", [join(output, "server/index.mjs")], {
   env: {
     ...process.env,
@@ -51,8 +52,11 @@ const server = spawn("node", [join(output, "server/index.mjs")], {
     NUXT_PUBLIC_MIRAFIVE_HOST: `http://localhost:${port}`,
     MIRAFIVE_SECRET_KEY: "sk_playground"
   },
-  stdio: "inherit"
+  stdio: ["ignore", "pipe", "pipe"]
 })
+
+server.stdout.on("data", (chunk: Buffer) => (log += String(chunk)))
+server.stderr.on("data", (chunk: Buffer) => (log += String(chunk)))
 
 try {
   const base = `http://localhost:${port}`
@@ -80,6 +84,20 @@ try {
     html.includes("new-checkout: true") && html.includes("limits.max: 3"),
     "server render answers the bootstrap"
   )
+
+  const cached = await fetch(`${base}/cached/page`)
+  const cachedHtml = await cached.text()
+
+  check(!cachedHtml.includes("mirafive-flags"), "a swr route carries no flag bootstrap")
+  check(
+    !cached.headers.get("cache-control")?.includes("private"),
+    "a swr route keeps its shared Cache-Control"
+  )
+  check(
+    cachedHtml.includes("new-checkout: false"),
+    "a swr route renders the fallback, not a visitor's answer"
+  )
+  check(log.includes("no flag bootstrap on cached route"), "the server warns about the cached route")
 
   const signup = await (await fetch(`${base}/api/signup`, { method: "POST" })).json()
 
