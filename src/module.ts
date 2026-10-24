@@ -18,7 +18,7 @@ export type { Feature }
 export interface ModuleOptions {
   /** The source's public website key (`mf_…`). `NUXT_PUBLIC_MIRAFIVE_KEY` sets it at runtime. */
   key?: string
-  /** Default `https://events.mirafive.io`. `NUXT_PUBLIC_MIRAFIVE_HOST` sets it at runtime. */
+  /** Default `https://collect.mirafive.io`. `NUXT_PUBLIC_MIRAFIVE_HOST` sets it at runtime. */
   host?: string
   /** The browser's mode, default `"consentless"`. `"full"` adds `identity()` and needs a consent answer. */
   mode?: "consentless" | "full"

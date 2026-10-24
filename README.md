@@ -72,10 +72,14 @@ export default defineEventHandler(async (event) => {
 })
 ```
 
+Add `payment_id: paymentIntent.id` to the properties to name the Stripe payment. MIRA FIVE
+merges the event with the payment it imports from your connected Stripe account, so the sale
+counts once.
+
 Pageviews need no code: sdk-browser's `pageviews()` follows the Nuxt router.
 
 Verify it: deploy (or run on a non-local host), open a page and look for
-`POST https://events.mirafive.io/v1/batch/mf_…` answering `202` in the network tab, then
+`POST https://collect.mirafive.io/v1/batch/mf_…` answering `202` in the network tab, then
 for the pageview in the source's live view in MIRA FIVE.
 
 ## Consent & privacy
@@ -111,7 +115,7 @@ for the pageview in the source's live view in MIRA FIVE.
 | Option | Default | Runtime env | |
 |---|---|---|---|
 | `key` | `""` | `NUXT_PUBLIC_MIRAFIVE_KEY` | the source's public website key |
-| `host` | `https://events.mirafive.io` | `NUXT_PUBLIC_MIRAFIVE_HOST` (browser and server); `MIRAFIVE_HOST` (read at build for the browser, at runtime by the server utils) | needs a scheme |
+| `host` | `https://collect.mirafive.io` | `NUXT_PUBLIC_MIRAFIVE_HOST` (browser and server); `MIRAFIVE_HOST` (read at build for the browser, at runtime by the server utils) | needs a scheme |
 | `mode` | `"consentless"` | build time only | `"full"` adds `identity()` |
 | `features` | `[]` | build time only | any of `"autocapture"`, `"search"`; `search` needs `"full"` |
 
@@ -143,7 +147,7 @@ scheme, or `search` without `mode: "full"`. A missing website key (neither
   utils also read `MIRAFIVE_HOST` at runtime when the public host is empty.
 - **Development.** `localhost` sends nothing (sdk-browser's local-host guard); a
   `[mirafive] local host` warning in the console confirms the client is running.
-- **CSP.** `connect-src https://events.mirafive.io` (or your `host`).
+- **CSP.** `connect-src https://collect.mirafive.io` (or your `host`).
 - Without a website key the client stays off (logged once in the browser) and the
   composables do nothing; a configuration error in the browser is logged, never
   thrown into your app.
@@ -179,7 +183,7 @@ Add MIRA FIVE analytics to this Nuxt 4 app with @mirafive/sdk-nuxt.
    `useMira().consent({ statistics })` from its callback in a
    `.client.ts` plugin.
 6. Verify: `nuxi build`, run it on a non-local host, check the network tab for
-   POST https://events.mirafive.io/v1/batch/<key> answering 202. Report what you changed.
+   POST https://collect.mirafive.io/v1/batch/<key> answering 202. Report what you changed.
 Do not add other analytics libraries, cookies or consent banners.
 ```
 

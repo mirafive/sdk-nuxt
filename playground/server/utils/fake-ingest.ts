@@ -1,2 +1,2 @@
-// A stand-in for events.mirafive.io so the playground runs offline.
+// A stand-in for collect.mirafive.io so the playground runs offline.
 export const received: unknown[] = []
