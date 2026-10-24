@@ -30,13 +30,12 @@ describe("module setup", () => {
   })
 
   it("keeps the secret key in private runtime config and out of every template", async () => {
-    const nuxt = await load({ key: "mf_test", secretKey: secret, mode: "full", features: ["flags"] })
+    const nuxt = await load({ key: "mf_test", secretKey: secret, mode: "full", features: ["search"] })
 
     expect(nuxt.options.runtimeConfig.public["mirafive"]).toEqual({ key: "mf_test", host: "" })
     expect(nuxt.options.runtimeConfig["mirafive"]).toEqual({ secretKey: secret })
     expect(JSON.stringify(nuxt.options.runtimeConfig.public)).not.toContain(secret)
     expect(await template(nuxt, "mirafive/client.mjs")).not.toContain(secret)
-    expect(await template(nuxt, "mirafive/server.mjs")).toBe("export const flags = true\n")
 
     await nuxt.close()
   })
@@ -73,12 +72,8 @@ describe("module setup", () => {
         expect.stringMatching(/runtime\/plugin\.server\./)
       ])
     )
-    expect(imports.map(({ name }) => name)).toEqual(
-      expect.arrayContaining(["useMira", "useFlag", "useFlagConfig"])
-    )
-    expect(nitro.imports.imports.map(({ name }) => name)).toEqual(
-      expect.arrayContaining(["useServerMira", "miraFlagsFor"])
-    )
+    expect(imports.map(({ name }) => name)).toEqual(expect.arrayContaining(["useMira"]))
+    expect(nitro.imports.imports.map(({ name }) => name)).toEqual(expect.arrayContaining(["useServerMira"]))
     expect((nuxt.options as { nitro?: { plugins?: string[] } }).nitro?.plugins).toEqual(
       expect.arrayContaining([expect.stringMatching(/runtime\/server\/nitro$/)])
     )

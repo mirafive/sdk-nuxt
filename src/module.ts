@@ -11,7 +11,7 @@ import {
   useLogger
 } from "@nuxt/kit"
 
-import { clientTemplate, type Feature, resolveFeatures, serverTemplate } from "./templates"
+import { clientTemplate, type Feature, resolveFeatures } from "./templates"
 
 export type { Feature }
 
@@ -24,7 +24,7 @@ export interface ModuleOptions {
   mode?: "consentless" | "full"
   /** Browser plugins besides pageviews; nothing else is bundled. */
   features?: Feature[]
-  /** Server only, for `useServerMira()` and `miraFlagsFor()`. Prefer `MIRAFIVE_SECRET_KEY` at runtime. */
+  /** Server only, for `useServerMira()`. Prefer `MIRAFIVE_SECRET_KEY` at runtime. */
   secretKey?: string
 }
 
@@ -74,18 +74,17 @@ export default defineNuxtModule<ModuleOptions>({
           resolve: (id) => require.resolve(id)
         })
     })
-    addTemplate({ filename: "mirafive/server.mjs", getContents: () => serverTemplate(features) })
 
     addPlugin({ src: resolver.resolve("./runtime/plugin.client"), mode: "client" })
     addPlugin({ src: resolver.resolve("./runtime/plugin.server"), mode: "server" })
     addImports(
-      ["useMira", "useFlag", "useFlagConfig"].map((name) => ({
+      ["useMira"].map((name) => ({
         name,
         from: resolver.resolve("./runtime/composables")
       }))
     )
     addServerImports(
-      ["useServerMira", "miraFlagsFor"].map((name) => ({
+      ["useServerMira"].map((name) => ({
         name,
         from: resolver.resolve("./runtime/server/mira")
       }))

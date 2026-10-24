@@ -1,16 +1,13 @@
 import { Mira } from "@mirafive/sdk-server"
-import { type FlagUnit, MiraFlags, type UserFlags } from "@mirafive/sdk-server/flags"
 import type { H3Event } from "h3"
 
 import { useRuntimeConfig } from "#imports"
 
 interface Clients {
   mira?: Mira
-  flags?: MiraFlags
-  warned?: boolean
 }
 
-// The app renderer and Nitro bundle this file separately; both share one client pair.
+// The app renderer and Nitro bundle this file separately; both share one client.
 const clients: Clients = Reflect.get(globalThis, "__mirafive_server") ?? {}
 
 Reflect.set(globalThis, "__mirafive_server", clients)
@@ -22,7 +19,7 @@ const setting = (section: unknown, name: string): string | undefined => {
 }
 
 /** The secret key from private runtime config, else `MIRAFIVE_SECRET_KEY`. */
-export const secretKey = (event: H3Event): string | undefined =>
+const secretKey = (event: H3Event): string | undefined =>
   setting(useRuntimeConfig(event)["mirafive"], "secretKey") ??
   (globalThis.process?.env["MIRAFIVE_SECRET_KEY"] || undefined)
 
@@ -42,27 +39,8 @@ export const useServerMira = (event: H3Event): Mira => {
   return server(event)
 }
 
-/** Flags for a unit; `Sec-GPC: 1` or `DNT: 1` on the request sets `optedOut`. */
-export const miraFlagsFor = (event: H3Event, unit: FlagUnit = {}): Promise<UserFlags> => {
-  const optedOut =
-    unit.optedOut === true || event.headers.get("sec-gpc") === "1" || event.headers.get("dnt") === "1"
-
-  clients.flags ??= new MiraFlags({ ...options(event), mira: server(event) })
-
-  return clients.flags.for({ ...unit, optedOut }, { waitUntil: (promise) => event.waitUntil(promise) })
-}
-
 export const flush = (event: H3Event): void => {
   if (event.context["mirafiveFlush"] && clients.mira) {
     event.waitUntil(clients.mira.flush())
-  }
-}
-
-/** Warns once per process; a server has no other channel. */
-export const warnOnce = (message: string): void => {
-  if (!clients.warned) {
-    clients.warned = true
-    // oxlint-disable-next-line no-console -- see above
-    console.warn(`[mirafive] ${message}`)
   }
 }

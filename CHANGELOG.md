@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+- **Breaking:** feature flags and A/B experiments are removed. `features` no longer
+  accepts `"flags"` or `"experiments"` (the build fails for them), the auto-imports
+  `useFlag`, `useFlagConfig` and `miraFlagsFor` are gone, and the server render writes no
+  `#mirafive-flags` block and no longer sets `Cache-Control: private, no-store`.
+  `@mirafive/sdk-server/flags` is no longer used.
+- Consent: statistics is the only purpose. The `experiments` and `targeting` purposes are
+  gone. `useMira().consent({ experiments, targeting })` from an existing site still
+  works; sdk-browser accepts and ignores the keys.
+
+
 ## 1.0.0 — 2026-09-27
 
 First release on the v1 protocol, rebuilt from scratch as a thin module over

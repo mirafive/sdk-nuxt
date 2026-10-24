@@ -1,1 +1,1 @@
-export { useFlag, useFlagConfig, useMira } from "@mirafive/sdk-vue"
+export { useMira } from "@mirafive/sdk-vue"

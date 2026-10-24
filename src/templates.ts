@@ -1,4 +1,4 @@
-export type Feature = "autocapture" | "search" | "flags" | "experiments"
+export type Feature = "autocapture" | "search"
 
 export interface ClientTemplateOptions {
   readonly full: boolean
@@ -8,13 +8,13 @@ export interface ClientTemplateOptions {
   readonly resolve: (id: string) => string
 }
 
-const known: readonly Feature[] = ["autocapture", "search", "flags", "experiments"]
+const known: readonly Feature[] = ["autocapture", "search"]
 
 const fail = (message: string): never => {
   throw new TypeError(`[@mirafive/sdk-nuxt] ${message}`)
 }
 
-/** Checks the options at build time; `experiments` brings `flags`. */
+/** Checks the options at build time. */
 export const resolveFeatures = (options: {
   mode?: unknown
   features?: readonly unknown[] | undefined
@@ -35,15 +35,11 @@ export const resolveFeatures = (options: {
     const found =
       known.find((candidate) => candidate === feature) ?? fail(`unknown feature "${String(feature)}"`)
 
-    if (mode !== "full" && (found === "search" || found === "experiments")) {
+    if (mode !== "full" && found === "search") {
       fail(`"${found}" needs mode "full"`)
     }
 
     features.add(found)
-  }
-
-  if (features.has("experiments")) {
-    features.add("flags")
   }
 
   return features
@@ -60,9 +56,7 @@ export const browserPlugins = ({
       [true, "pageviews", "pageviews", hash ? "{ hash: true }" : ""],
       [full, "identity", "identity", ""],
       [features.has("autocapture"), "autocapture", "autocapture", ""],
-      [features.has("search"), "search", "siteSearch", ""],
-      [features.has("flags"), "flags", "flags", ""],
-      [features.has("experiments"), "experiments", "experiments", ""]
+      [features.has("search"), "search", "siteSearch", ""]
     ] as const
   ).flatMap(([on, ...plugin]) => (on ? [plugin] : []))
 
@@ -81,7 +75,3 @@ export const clientTemplate = (options: ClientTemplateOptions): string => {
     ""
   ].join("\n")
 }
-
-/** `#build/mirafive/server.mjs`: whether the server render writes a flag bootstrap. */
-export const serverTemplate = (features: ReadonlySet<Feature>): string =>
-  `export const flags = ${features.has("flags")}\n`
