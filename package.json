@@ -1,22 +1,24 @@
 {
-  "name": "@mirafive/sdk-nuxt",
-  "version": "1.0.0",
-  "description": "MIRA FIVE SDK for Nuxt",
+  "name": "@mirafive/nuxt",
+  "version": "2.0.0",
+  "description": "MIRA FIVE for Nuxt: one module line for consent-aware analytics, auto-imported useMira() and useServerMira(event), events sent after the response. No dependencies beyond MIRA FIVE's own.",
   "keywords": [
     "analytics",
-    "cookieless",
-    "gdpr",
+    "attribution",
+    "consent",
+    "mira-five",
     "mirafive",
+    "nitro",
     "nuxt",
     "nuxt-module",
-    "privacy"
+    "vue"
   ],
-  "homepage": "https://mirafive.io",
+  "homepage": "https://github.com/mirafive/sdk-nuxt#readme",
   "bugs": {
-    "email": "support@mirafive.io"
+    "url": "https://github.com/mirafive/sdk-nuxt/issues"
   },
   "license": "MIT",
-  "author": "MIRA FIVE <support@mirafive.io>",
+  "author": "Cloo GmbH <hallo@mirafive.io> (https://mirafive.io)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mirafive/sdk-nuxt.git"
@@ -26,64 +28,66 @@
   ],
   "type": "module",
   "sideEffects": false,
-  "main": "./dist/module.mjs",
-  "typesVersions": {
-    "*": {
-      ".": [
-        "./dist/types.d.mts"
-      ]
-    }
-  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/types.d.mts",
-      "import": "./dist/module.mjs"
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./runtime/plugin.js": {
+      "types": "./dist/runtime/plugin.d.ts",
+      "default": "./dist/runtime/plugin.js"
+    },
+    "./runtime/composables.js": {
+      "types": "./dist/runtime/composables.d.ts",
+      "default": "./dist/runtime/composables.js"
+    },
+    "./runtime/server.js": {
+      "types": "./dist/runtime/server.d.ts",
+      "default": "./dist/runtime/server.js"
+    },
+    "./runtime/nitro.js": {
+      "types": "./dist/runtime/nitro.d.ts",
+      "default": "./dist/runtime/nitro.js"
     },
     "./package.json": "./package.json"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "scripts": {
-    "build": "nuxt-module-build build",
-    "test": "vitest run",
-    "typecheck": "tsc --noEmit",
-    "lint": "oxlint --type-aware --deny-warnings",
+    "build": "bun run build.ts",
+    "check": "bun run format:check && bun run lint && bun run typecheck && bun run test && bun run build",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
-    "playground": "nuxt dev playground",
-    "playground:verify": "bun scripts/verify-playground.ts",
-    "check": "bun run format:check && bun run lint && bun run typecheck && bun run test && bun run build && publint --strict && attw --pack --profile esm-only",
-    "prepublishOnly": "bun run check"
+    "lint": "oxlint",
+    "test": "bun test",
+    "typecheck": "bun check"
   },
   "dependencies": {
-    "@nuxt/kit": "^4.5.2"
+    "@mirafive/node": "^2.0.0",
+    "@mirafive/vue": "^2.0.0",
+    "@mirafive/web": "^2.0.0"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.18.5",
-    "@mirafive/sdk-browser": "^1.0.0",
-    "@mirafive/sdk-server": "^1.0.0",
-    "@mirafive/sdk-vue": "^1.0.0",
-    "@nuxt/module-builder": "^1.0.3",
-    "@nuxt/schema": "^4.5.2",
-    "@types/node": "^26.6.5",
-    "nuxt": "^4.5.2",
-    "oxfmt": "^0.74.0",
-    "oxlint": "^1.89.0",
-    "oxlint-tsgolint": "^7.0.2005",
-    "publint": "^0.3.25",
-    "typescript": "^6.0.3",
-    "vitest": "^5.0.5",
-    "vue": "^3.5.44"
+    "@types/bun": "^1.4.4",
+    "oxfmt": "^0.77.0",
+    "oxlint": "^1.92.0",
+    "oxlint-tsgolint": "^7.0.2006",
+    "typescript": "^7.0.2",
+    "vue": "^3.5.45"
   },
   "peerDependencies": {
-    "@mirafive/sdk-browser": "^1.0.0",
-    "@mirafive/sdk-server": "^1.0.0",
-    "@mirafive/sdk-vue": "^1.0.0",
-    "nuxt": "^4.0.0"
+    "nuxt": ">=3.13"
   },
-  "engines": {
-    "node": ">=20"
-  },
-  "packageManager": "bun@1.4.4"
+  "packageManager": "bun@1.4.4",
+  "mira": {
+    "external": [
+      "#app",
+      "#imports"
+    ],
+    "nodeLoad": false
+  }
 }

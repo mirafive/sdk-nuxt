@@ -1,10 +1,5 @@
 node_modules/
 dist/
-coverage/
-*.tgz
+*.tsbuildinfo
 .DS_Store
-.nuxt/
-.output/
-playground/.nuxt/
-playground/.output/
-playground/node_modules/
+*.log
