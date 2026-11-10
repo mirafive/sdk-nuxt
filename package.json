@@ -1,6 +1,6 @@
 {
   "name": "@mirafive/nuxt",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "MIRA FIVE for Nuxt: one module line for consent-aware analytics, auto-imported useMira() and useServerMira(event), events sent after the response. No dependencies beyond MIRA FIVE's own.",
   "keywords": [
     "analytics",
@@ -67,14 +67,14 @@
     "typecheck": "bun check"
   },
   "dependencies": {
-    "@mirafive/node": "^2.0.0",
-    "@mirafive/vue": "^2.0.0",
-    "@mirafive/web": "^2.0.0"
+    "@mirafive/node": "^2.2.1",
+    "@mirafive/vue": "^2.0.1",
+    "@mirafive/web": "^2.0.2"
   },
   "devDependencies": {
     "@types/bun": "^1.4.4",
-    "oxfmt": "^0.77.0",
-    "oxlint": "^1.92.0",
+    "oxfmt": "^0.78.0",
+    "oxlint": "^1.93.0",
     "oxlint-tsgolint": "^7.0.2006",
     "typescript": "^7.0.2",
     "vue": "^3.5.45"
