@@ -5,7 +5,7 @@
     "": {
       "name": "@mirafive/nuxt",
       "dependencies": {
-        "@mirafive/node": "^2.2.1",
+        "@mirafive/node": "^2.3.2",
         "@mirafive/vue": "^2.0.1",
         "@mirafive/web": "^2.0.2",
       },
@@ -159,9 +159,9 @@
 
     "@mapbox/node-pre-gyp": ["@mapbox/node-pre-gyp@2.0.3", "", { "dependencies": { "consola": "^3.2.3", "detect-libc": "^2.0.0", "https-proxy-agent": "^7.0.5", "node-fetch": "^2.6.7", "nopt": "^8.0.0", "semver": "^7.5.3", "tar": "^7.4.0" }, "bin": { "node-pre-gyp": "bin/node-pre-gyp" } }, "sha512-uwPAhccfFJlsfCxMYTwOdVfOz3xqyj8xYL3zJj8f0pb30tLohnnFPhLuqp4/qoEz8sNxe4SESZedcBojRefIzg=="],
 
-    "@mirafive/node": ["@mirafive/node@2.2.1", "", { "dependencies": { "@mirafive/protocol": "^2.2.1" } }, "sha512-HqRpv1G/ZgDbA00Fbub9ypqXVoGhnucqSezJ84Xtqr8+ntJ6ZpbCXqqCaEatZ/BMU1+ZePp4mZ7UrpAWnriCoQ=="],
+    "@mirafive/node": ["@mirafive/node@2.3.2", "", { "dependencies": { "@mirafive/protocol": "^2.3.0" } }, "sha512-t5kf5u9ZKNBTxf+kNbEY/regFkrI2LPmJW4lSgMKwsUfYUkrHXNUkY2rhKIZVkKOtmmnjX3LpSUu836HvOPH6Q=="],
 
-    "@mirafive/protocol": ["@mirafive/protocol@2.2.1", "", { "bin": { "mirafive-validate": "dist/cli.js" } }, "sha512-3ocDgDZQS3TPrSIRaRag/cCoRuDpxIGpFEcuMjQA7gPTd8NdTzsQmW9rBfqQv6efnJPn+1IMk4dswxhW7r8t8w=="],
+    "@mirafive/protocol": ["@mirafive/protocol@2.3.0", "", { "bin": { "mirafive-validate": "dist/cli.js" } }, "sha512-XCBV7CsJ8AVnExrK4sY+GwBYCOpoRp1ucazUzc35R83Vu+hEPe3m1YlgRAASxuHcTIaU3Lmbj7ZVc1oNH+QH4g=="],
 
     "@mirafive/vue": ["@mirafive/vue@2.0.1", "", { "dependencies": { "@mirafive/web": "^2.0.2" }, "peerDependencies": { "vue": ">=3.3" } }, "sha512-JBWAhudKxYhO0BHJA8YuQatVGAn4rCsda+FelUSdbyaT/uFjN6gMgYqdz0zTlrjz3F1jEURdVJ//EBYVdd1BQw=="],
 
@@ -1240,6 +1240,8 @@
     "@babel/helper-create-class-features-plugin/semver": ["semver@6.3.2", "", { "bin": { "semver": "bin/semver.js" } }, "sha512-GYrCADwpu6yV5OAvchkQ27Z5wwMxWAEMg5NNWjyHh/5DboFFqbdbvYNIvZouQpxXyeMPoTOh0vdPYKlf0ZswdQ=="],
 
     "@dxup/nuxt/chokidar": ["chokidar@6.0.0", "", { "dependencies": { "readdirp": "^5.1.1" } }, "sha512-Ec2Z7wpcKBiMpR7DxteoqS/sq5G5d2A4fpxzPv6+fD7xNNdrTghn7L11YwV5EN1B3i72Erc3XVT5FkWIDx90+A=="],
+
+    "@mirafive/web/@mirafive/protocol": ["@mirafive/protocol@2.2.1", "", { "bin": { "mirafive-validate": "dist/cli.js" } }, "sha512-3ocDgDZQS3TPrSIRaRag/cCoRuDpxIGpFEcuMjQA7gPTd8NdTzsQmW9rBfqQv6efnJPn+1IMk4dswxhW7r8t8w=="],
 
     "@nuxt/vite-server/srvx": ["srvx@1.0.5", "", { "bin": { "srvx": "./bin/srvx.mjs" } }, "sha512-KvSKRpgPG/oaq3cyT614OQ2bAa7DynuGamivCZeoZzIUULOdbQz6wUtnnVuC4+DCx2Zglzo8v5gBYmWIWYhDxA=="],
 
