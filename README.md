@@ -70,6 +70,25 @@ export default defineEventHandler(async (event) => {
 `useServerMira(event)` returns the process-wide [`@mirafive/node`](https://github.com/mirafive/sdk-node#readme)
 client; a Nitro plugin flushes it with `event.waitUntil` once the response is out.
 
+### Erasing a person (GDPR Art. 17)
+
+```ts
+// server/api/privacy.delete.ts
+export default defineEventHandler(async (event) => {
+  const { customerId } = await readBody(event);
+  const proof = await useServerMira(event).deletePerson(customerId); // { request_id, deleted, … }
+  return { requestId: proof.request_id };
+});
+```
+
+Erases the person with the same effect as the dashboard's People page: events, devices, traits,
+ids in other systems and touchpoints. Revenue stays in the totals, without the person. Unlike the
+event methods it runs now, resolves with the proof (`request_id`, rows `deleted` per table) and
+throws a `MiraError`: `error.retryable` is true for a busy or unreachable ingest, false for a wrong
+key or a bad id. The erasure is idempotent: an unknown or already erased person resolves with zero
+rows, so a retry is always safe. Events that name the person afterwards are refused for 30 days:
+stop sending them. Details: [`deletePerson` in `@mirafive/node`](https://github.com/mirafive/sdk-node#erasing-a-person-gdpr-art-17).
+
 The module refuses a secret key in `mirafive.key`: that value ships to every browser.
 
 ## For AI coding assistants
